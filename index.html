@@ -1,0 +1,264 @@
+<html>
+    <head>
+
+        <title>Code Player</title>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+        <script src="\jquery-ui\jquery-ui.js"></script>
+        <link rel="stylesheet" href="\jquery-ui\jquery-ui.css">
+
+        <style type="text/css">
+
+            body{
+
+                font-family: sans-serif;
+                margin: 0;
+                padding: 0;
+            }
+
+            #nav{
+                
+                width: 100%;
+                height: 30px;
+                background-color: #EEEEEE;
+                padding: 5px;
+
+            }
+
+            #logo{
+                
+                float:left;
+                font-weight: bold;
+                font-size: 120%;
+
+            }
+
+            #btn-container{
+
+                margin: 0 auto;
+                width: 350px;
+
+            }
+
+            .toggle-btn{
+
+                float: left;
+                border: 1px solid grey;
+                padding: 6px;
+                text-align: center;
+                border-right: none;
+                font-size: 90%;
+                font-weight: bold;
+
+            }
+
+            .highlight{
+
+                background-color: #88948b;
+                cursor: pointer;
+
+            }
+
+            #html{
+
+                border-top-left-radius: 4px;
+                border-bottom-left-radius: 4px;
+
+            }
+
+            #output{
+
+                border-top-right-radius: 4px;
+                border-bottom-right-radius: 4px;
+                border-right: 1px solid grey;
+
+            }
+            .clear{
+
+                clear: both;
+               
+            }
+
+            #code-section{
+
+                display: grid;
+                grid-gap: 0.5px;
+                grid-template:
+                    "html css js output" 100vh/
+                    2fr 2fr 2fr 2fr;
+
+            }
+            textarea{
+                
+                resize: none;
+                
+            }
+
+            .panel{
+
+                border: none;
+                border-right: 1px solid grey;
+
+            }
+
+            #output-sec{
+
+                border: none;
+
+            }
+
+            .active{
+
+               background-color: #E8F2FF;
+
+            }
+
+            .hidden{
+
+                display: none;
+
+            }
+			
+			#theme-toggle{
+			
+				margin: 0 auto;
+				width: 100px;
+				float: right;
+				margin-left: 20px;
+				margin-right: 50px;
+				border: none;
+			}
+			
+			#dark,
+			#light{
+			
+				border: 1px solid grey;
+				border-radius: 2px;
+			
+			}
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <nav>
+            <div id="nav">
+
+                <div id="logo">
+                    Code Player
+                </div>
+
+                <div id="btn-container">
+                    <div class="toggle-btn active" id="html">HTML</div>
+                    <div class="toggle-btn" id="css">CSS</div>
+                    <div class="toggle-btn" id="js">JavaScript</div>
+                    <div class="toggle-btn active" id="output">Output</div>
+                </div>
+				
+				<div id="theme-toggle">
+				<div class="toggle-btn" id="dark">Dark</div>
+				<div class="toggle-btn" id="light">Light</div>
+				</div>
+
+            </div>
+			
+            <div class="clear"></div>
+        </nav>
+
+        <main>
+
+            <div id="code-section">
+
+                <textarea id="html-sec" class="panel" placeholder="HTML"><p id="para">Hi There</p></textarea>
+                <textarea id="css-sec" class="panel hidden" placeholder="CSS"> p{color: green;} </textarea>
+                <textarea id="js-sec" class="panel hidden" placeholder="JavaScript">document.getElementById("para").innerHTML = "Welcome";</textarea>
+                <iframe id="output-sec" class="panel"></iframe>
+
+            </div>
+
+        </main>
+
+        <script type="text/javascript">
+		
+			function updateOutputSec(){
+			
+				$("#output-sec").contents().find("html").html("<html> <head> <style type='text/css'>" + $("#css-sec").val() + "</style> </head> <body>" + $("#html-sec").val() + "</body> </html>");
+				
+				//console.log(document.getElementById("output-sec").contentWindow.eval($("#js-sec").val()));
+				document.getElementById("output-sec").contentWindow.eval($("#js-sec").val());
+			
+			}
+
+            $(".toggle-btn").hover(function(){
+
+                $(this).addClass("highlight");
+
+            }, function(){
+
+                $(this).removeClass("highlight");
+
+            });
+
+            $(".toggle-btn").click(function(){
+
+                $(this).toggleClass("active");
+
+                $(this).removeClass("highlight");
+
+                var secId = $(this).attr("id") + "-sec";
+
+                $("#"+secId).toggleClass("hidden");
+				
+				var numActiveSec = 4 - $(".hidden").length;
+				
+				console.log("lenght of hidden class elements = "+$(".hidden").length);
+                console.log(numActiveSec);
+                $(".panel").width(($(window).width()/numActiveSec));
+
+            });
+			
+			$("#dark").click(function(){
+				
+				//$("#theme").html("Light");
+				
+				$("#code-section").find("textarea").css({
+				
+					backgroundColor: "black",
+					color: "#56f52a"
+				
+				});
+				
+				})
+				
+			$("#light").click(function(){
+				
+				//$("#theme").html("Light");
+				
+				$("#code-section").find("textarea").css({
+				
+					backgroundColor: "white",
+					color: "black"
+				
+				});
+				
+				})
+			
+			
+            $(".panel").height($(window).height() - 50);
+
+            $(".panel").width(($(window).width()/2)-20);
+			
+            updateOutputSec();
+
+
+            $("textarea").on('change keyup paste', function(){
+			
+                updateOutputSec();
+            
+            });
+
+        </script>
+    </body>
+</html>
